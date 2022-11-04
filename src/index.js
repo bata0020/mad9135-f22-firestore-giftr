@@ -15,6 +15,34 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
+// AUTH
+import { GithubAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+
+const auth = getAuth();
+auth.languageCode = "en";
+
+const provider = new GithubAuthProvider();
+
+//check if allow signup should be a string
+provider.setCustomParameters({
+  allow_signup: "true",
+});
+
+function attemptLogin() {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      const credential = GithubAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      const user = result.user;
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const email = error.customData.email;
+      const credential = GithubAuthProvider.credentialFromError(error);
+    });
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyDgLEo4-GeXRZkLPXJ40Hvns6Gd-8qdi18",
   authDomain: "fire-giftr-1b0b0.firebaseapp.com",
