@@ -14,34 +14,15 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-
-// AUTH
-import { GithubAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-
-const auth = getAuth();
-auth.languageCode = "en";
-
-const provider = new GithubAuthProvider();
-
-//check if allow signup should be a string
-provider.setCustomParameters({
-  allow_signup: "true",
-});
-
-function attemptLogin() {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      const credential = GithubAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
-      const user = result.user;
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      const email = error.customData.email;
-      const credential = GithubAuthProvider.credentialFromError(error);
-    });
-}
+import {
+  GithubAuthProvider,
+  getAuth,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  setPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDgLEo4-GeXRZkLPXJ40Hvns6Gd-8qdi18",
@@ -54,6 +35,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const auth = getAuth();
+auth.languageCode = "en";
+
+const provider = new GithubAuthProvider();
+
+//check if allow signup should be a string
+provider.setCustomParameters({
+  allow_signup: "true",
+});
 
 const people = [];
 const months = [
@@ -73,8 +64,11 @@ const months = [
 let personId = "";
 let ideaId = "";
 
-document.addEventListener("DOMContentLoaded", () => {
-  getPeople();
+function addListeners() {
+  document
+    .getElementById("signInGitHub")
+    .addEventListener("click", attemptLogin);
+  document.getElementById("signOut").addEventListener("click", signOutUser);
   document
     .getElementById("btnAddPerson")
     .addEventListener("click", showOverlay);
@@ -98,23 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", handleSelectIdea);
   document.getElementById("btnYes").addEventListener("click", deletePerson);
   document.getElementById("btnYesDelete").addEventListener("click", deleteIdea);
-
-  onSnapshot(collection(db, "people"), (snapshot) => {
-    let people = [];
-    snapshot.docs.forEach((doc) => {
-      people.push({ id: doc.id, ...doc.data() });
-    });
-    buildPeople(people);
-  });
-
-  onSnapshot(collection(db, "gift-ideas"), (snapshot) => {
-    let ideas = [];
-    snapshot.docs.forEach((doc) => {
-      ideas.push({ id: doc.id, ...doc.data() });
-    });
-    getIdeas(personId);
-  });
-});
+}
 
 async function getPeople() {
   const query = await getDocs(collection(db, "people"));
@@ -407,3 +385,5 @@ function showOverlay(ev) {
   const id = ev.target.id === "btnAddPerson" ? "dlgPerson" : "dlgIdea";
   document.getElementById(id).classList.add("active");
 }
+
+document.addEventListener("DOMContentLoaded", addListeners);

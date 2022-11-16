@@ -13,7 +13,7 @@ html {
 
 body {
   width: 100%;
-  max-width: 85em;
+  max-width: 70em;
   margin: 0 auto;
   background-color: #F2F4F5;
 }
@@ -49,7 +49,62 @@ h2 {
 main {
   display: flex;
   justify-content: space-evenly;
-  gap: 1.5rem;
+  gap: 1rem;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: #1338be;
+}
+
+.sign-in-out {
+  display: flex;
+  justify-content: end;
+  padding: 0.25rem 0;
+  align-items: baseline;
+}
+
+.sign-in, .sign-out, .email {
+  display: none;
+}
+
+.sign-in, .sign-out {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sign-in {
+  border: 0.025rem solid #1c5a4c;
+  color: #1c5a4c;
+  box-shadow: 0 0 3px #1c5a4c;
+}
+
+.sign-in:hover {
+  background-color: #1c5a4c;
+  color: #f1f1f1
+}
+
+.sign-out {
+  border: 0.025rem solid #991400;
+  color: #991400;
+  box-shadow: 0 0 3px #991400;
+}
+
+.sign-out:hover {
+  background-color: #991400;
+  color: #f1f1f1
+}
+
+#email {
+  padding-right: 2rem;
+  font-size: 1rem;
+  font-style: italic;
+  color: #114764;
 }
 
 .people,
@@ -60,6 +115,7 @@ main {
   border-radius: 0.5rem;
   background-color: #C7E1E0;
   box-shadow: 1px 1px 5px #a1a1a1;
+  display: none;
 }
 
 .people-title,
@@ -67,6 +123,7 @@ main {
   display: flex;
   justify-content: space-between;
   margin-bottom: 2rem;
+  align-items: center;
 }
 
 p {
@@ -96,7 +153,7 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.35rem 0;
+  padding: 0.45rem 0;
 }
 
 .person {
@@ -117,7 +174,7 @@ li {
   border: 1px solid #1F407D;
   box-shadow: 1px 1px 2px #a1a1a1;
   border-radius: 0.25rem;
-  padding: 0rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   cursor: pointer;
 }
 
@@ -166,12 +223,13 @@ li {
 
 .person.selected .name {
   color: #7A1000;
-  font-weight: 800;
-  font-size: 1.27rem;
+  font-weight: 900;
+  font-style: italic;
 }
 
 .person.selected .dob {
-  color: #7A1000
+  color: #7A1000;
+  font-style: italic;
 }
 
 
@@ -260,6 +318,10 @@ input:not([type="checkbox"]) {
 
   p {
     font-size: 1.25rem;
+  }
+
+  .sign-in, .sign-out {
+    font-size: 1.5rem;
   }
 
   .name,

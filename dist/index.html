@@ -13,12 +13,27 @@
   <header>
     <h1>Fire-Giftr</h1>
     <h2>All Gifts Must Go!</h2>
+    <nav>
+      <ul class="sign-in-out">
+        <li>
+          <a href="#" id="signInGitHub" class="sign-in">Sign In With GitHub</a>
+        </li>
+        <li>
+          <p id="email" class="email">User</p>
+        </li>
+        <li>
+          <a href="#" id="signOut" class="sign-out">Sign Out</a>
+        </li>
+      </ul>
+    </nav>
   </header>
-  <main>
+  <main class="content">
     <section class="people">
       <div class="people-title">
         <h2>People</h2>
-        <button id="btnAddPerson">Add Person</button>
+        <div>
+          <button id="btnAddPerson">Add Person</button>
+        </div>
       </div>
       <ul class="person-list">
         <li data-id="asdfasdf" class="person">
@@ -56,7 +71,9 @@
     <section class="ideas">
       <div class="ideas-title">
         <h2>Ideas</h2>
-        <button id="btnAddIdea">Add Idea</button>
+        <div>
+          <button id="btnAddIdea">Add Idea</button>
+        </div>
       </div>
       <ul class="idea-list">
         <li class="idea" data-id="">
