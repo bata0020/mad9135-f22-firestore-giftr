@@ -128,6 +128,15 @@ function attemptLogin() {
     });
 }
 
+function signOutUser() {
+  signOut(auth)
+    .then(() => {
+      sessionStorage.clear();
+      console.log("User has signed out");
+    })
+    .catch((err) => console.log(err));
+}
+
 async function getPeople() {
   const query = await getDocs(collection(db, "people"));
   query.forEach((doc) => {
