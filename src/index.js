@@ -92,6 +92,15 @@ function addListeners() {
   document.getElementById("btnYesDelete").addEventListener("click", deleteIdea);
 }
 
+onAuthStateChanged(auth, (user) => {
+  console.log("User Status: ", user);
+  if (user) {
+    changeUI(user);
+  } else {
+    changeUI();
+  }
+});
+
 async function getPeople() {
   const query = await getDocs(collection(db, "people"));
   query.forEach((doc) => {
