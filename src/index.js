@@ -161,6 +161,26 @@ function changeUI(user) {
   }
 }
 
+function hasUserLoggedIn() {
+  getPeople();
+
+  onSnapshot(collection(db, "people"), (snapshot) => {
+    let people = [];
+    snapshot.docs.forEach((doc) => {
+      people.push({ id: doc.id, ...doc.data() });
+    });
+    buildPeople(people);
+  });
+
+  onSnapshot(collection(db, "gift-ideas"), (snapshot) => {
+    let ideas = [];
+    snapshot.docs.forEach((doc) => {
+      ideas.push({ id: doc.id, ...doc.data() });
+    });
+    getIdeas(personId);
+  });
+}
+
 async function getPeople() {
   const query = await getDocs(collection(db, "people"));
   query.forEach((doc) => {
