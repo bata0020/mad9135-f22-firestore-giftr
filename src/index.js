@@ -40,8 +40,6 @@ const auth = getAuth();
 auth.languageCode = "en";
 
 const provider = new GithubAuthProvider();
-
-//check if allow signup should be a string
 provider.setCustomParameters({
   allow_signup: "true",
 });
