@@ -137,6 +137,30 @@ function signOutUser() {
     .catch((err) => console.log(err));
 }
 
+function changeUI(user) {
+  let peopleSection = document.querySelector(".people");
+  let ideasSection = document.querySelector(".ideas");
+  let signIn = document.querySelector(".sign-in");
+  let signOut = document.querySelector(".sign-out");
+  let email = document.querySelector(".email");
+
+  if (user) {
+    peopleSection.style.display = "block";
+    ideasSection.style.display = "block";
+    signOut.style.display = "block";
+    email.style.display = "block";
+    email.textContent = `User: ${user.email}`;
+    signIn.style.display = "none";
+    hasUserLoggedIn();
+  } else {
+    peopleSection.style.display = "none";
+    ideasSection.style.display = "none";
+    signOut.style.display = "none";
+    email.style.display = "none";
+    signIn.style.display = "block";
+  }
+}
+
 async function getPeople() {
   const query = await getDocs(collection(db, "people"));
   query.forEach((doc) => {
