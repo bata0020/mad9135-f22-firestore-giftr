@@ -101,6 +101,33 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+function attemptLogin() {
+  setPersistence(auth, browserSessionPersistence)
+    .then(() => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const credential = GithubAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          sessionStorage.setItem("token", token);
+          const user = result.user;
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          const email = error.customData.email;
+          const credential = GithubAuthProvider.credentialFromError(error);
+          console.log(errorCode);
+          console.log(errorMessage);
+        });
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+    });
+}
+
 async function getPeople() {
   const query = await getDocs(collection(db, "people"));
   query.forEach((doc) => {
