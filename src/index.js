@@ -22,6 +22,7 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserSessionPersistence,
+  signInWithCredential,
 } from "firebase/auth";
 
 const firebaseConfig = {
