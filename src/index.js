@@ -28,7 +28,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyDgLEo4-GeXRZkLPXJ40Hvns6Gd-8qdi18",
   // authDomain: "fire-giftr-1b0b0.firebaseapp.com",
-  authDomain: "auth.custom.domain.com",
+  authDomain: "auth.github.com",
   projectId: "fire-giftr-1b0b0",
   storageBucket: "fire-giftr-1b0b0.appspot.com",
   messagingSenderId: "314280737166",
