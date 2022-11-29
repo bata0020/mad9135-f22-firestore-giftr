@@ -23,6 +23,7 @@ import {
   setPersistence,
   browserSessionPersistence,
   signInWithCredential,
+  getAdditionalUserInfo,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -93,15 +94,6 @@ function addListeners() {
   document.getElementById("btnYesDelete").addEventListener("click", deleteIdea);
 }
 
-onAuthStateChanged(auth, (user) => {
-  console.log("User Status: ", user);
-  if (user) {
-    changeUI(user);
-  } else {
-    changeUI();
-  }
-});
-
 function attemptLogin() {
   setPersistence(auth, browserSessionPersistence)
     .then(() => {
@@ -111,11 +103,20 @@ function attemptLogin() {
           const token = credential.accessToken;
           sessionStorage.setItem("token", token);
           const user = result.user;
+          console.log("User", user);
+          const userColRef = collection(db, "users");
+          setDoc(
+            doc(userColRef, user.uid),
+            {
+              email: user.email,
+            },
+            { merge: true }
+          );
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          const email = error.customData.email;
+          // const email = error.customData.email;
           const credential = GithubAuthProvider.credentialFromError(error);
           console.log(errorCode);
           console.log(errorMessage);
@@ -128,6 +129,15 @@ function attemptLogin() {
       console.log(errorMessage);
     });
 }
+
+onAuthStateChanged(auth, (user) => {
+  console.log("User Status: ", user);
+  if (user) {
+    changeUI(user);
+  } else {
+    changeUI();
+  }
+});
 
 function signOutUser() {
   signOut(auth)
@@ -157,6 +167,7 @@ function changeUI(user) {
     peopleSection.style.display = "none";
     ideasSection.style.display = "none";
     signOut.style.display = "none";
+    email.textContent = "";
     email.style.display = "none";
     signIn.style.display = "block";
   }
