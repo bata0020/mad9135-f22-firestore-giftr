@@ -331,13 +331,47 @@ label {
   padding-top: 2rem
 }
 
-@media only screen and (min-width: 60em) {
+@media only screen and (min-width: 45em) {
   h1 {
-    font-size: 4.209rem;
+    font-size: 2.488rem;
   }
 
   h2 {
-    font-size: 3.157rem;
+    font-size: 2rem;
+  }
+
+  main {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .sign-out {
+    width: 10rem;
+    margin: 0 auto;
+  }
+
+  .sign-in {
+    width: 12rem;
+    margin: 0 auto;
+  }
+
+  .idea-info {
+    gap: 2.5rem;
+  }
+
+  .form {
+    width: 22em;
+    margin: 0 auto;
+  }
+}
+
+@media only screen and (min-width: 60em) {
+  h1 {
+    font-size: 3.052rem;
+  }
+
+  h2 {
+    font-size: 2.441rem;
   }
 
   p {
@@ -345,7 +379,7 @@ label {
   }
 
   .sign-in, .sign-out {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   .name,
