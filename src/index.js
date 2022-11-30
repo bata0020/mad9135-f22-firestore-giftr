@@ -9,7 +9,6 @@ import {
   getDoc,
   addDoc,
   setDoc,
-  orderBy,
   onSnapshot,
   updateDoc,
   deleteDoc,
@@ -22,8 +21,6 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserSessionPersistence,
-  signInWithCredential,
-  getAdditionalUserInfo,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -109,6 +106,8 @@ function attemptLogin() {
             doc(userColRef, user.uid),
             {
               email: user.email,
+              displayName: user.displayName,
+              photo: user.photoURL,
             },
             { merge: true }
           );
@@ -176,16 +175,22 @@ function changeUI(user) {
 function hasUserLoggedIn() {
   getPeople();
 
-  onSnapshot(collection(db, "people"), (snapshot) => {
-    let people = [];
-    snapshot.docs.forEach((doc) => {
+  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
+  const queryUsers = query(
+    collection(db, "people"),
+    where("owner", "==", userRef)
+  );
+
+  onSnapshot(queryUsers, (querySnapshot) => {
+    const people = [];
+    querySnapshot.forEach((doc) => {
       people.push({ id: doc.id, ...doc.data() });
     });
     buildPeople(people);
   });
 
   onSnapshot(collection(db, "gift-ideas"), (snapshot) => {
-    let ideas = [];
+    const ideas = [];
     snapshot.docs.forEach((doc) => {
       ideas.push({ id: doc.id, ...doc.data() });
     });
@@ -194,8 +199,10 @@ function hasUserLoggedIn() {
 }
 
 async function getPeople() {
-  const query = await getDocs(collection(db, "people"));
-  query.forEach((doc) => {
+  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
+  const docs = query(collection(db, "people"), where("owner", "==", userRef));
+  const querySnapshot = await getDocs(docs);
+  querySnapshot.forEach((doc) => {
     const data = doc.data();
     const id = doc.id;
     people.push({ id, ...data });
@@ -204,6 +211,8 @@ async function getPeople() {
 }
 
 function buildPeople(people) {
+  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
+  const owner = userRef.id;
   const ul = document.querySelector("ul.person-list");
   if (people.length) {
     ul.innerHTML = people
@@ -211,7 +220,7 @@ function buildPeople(people) {
         const dob = `${months[person["birth-month"] - 1]} ${
           person["birth-day"]
         }`;
-        return `<li data-id="${person.id}" class="person">
+        return `<li data-id="${person.id}" data-owner="${owner}" class="person">
                   <div class="person-info">
                     <p class="name">${person.name}</p>
                     <p class="dob">${dob}</p>
@@ -257,7 +266,7 @@ function buildIdeas(ideas) {
         if (idea.bought === true) {
           return `<li class="idea" data-id="${idea.id}">
                     <div class="idea-info">
-                      <label for="chk-${idea.id}"><input type="checkbox" id="chk-${idea.id}" checked/> Bought</label>
+                      <label for="chk-${idea.id}"><input type="checkbox" id="chk-${idea.id}" checked /> Bought</label>
                       <div>
                         <p class="title">${idea.idea}</p>
                         <p class="location">${idea.location}</p>
@@ -297,11 +306,13 @@ async function savePerson() {
   let name = document.getElementById("name").value;
   let month = document.getElementById("month").value;
   let day = document.getElementById("day").value;
+  let userRef = doc(collection(db, "users"), auth.currentUser.uid);
   if (!name || !month || !day) return alert("Please fill all fields.");
   const person = {
     name,
     "birth-month": month,
     "birth-day": day,
+    owner: userRef,
   };
   if (selectedId) {
     try {
@@ -359,10 +370,34 @@ async function handleSelectPerson(ev) {
   }
 }
 
+// async function deletePerson() {
+//   let selectedId = document.getElementById("btnYes").getAttribute("data-id");
+//   const docRef = doc(db, "people", selectedId);
+//   await deleteDoc(docRef);
+//   document.getElementById("deleteAlert").classList.add("active");
+// }
+
 async function deletePerson() {
-  let selectedId = document.getElementById("btnYes").getAttribute("data-id");
-  const docRef = doc(db, "people", selectedId);
+  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
+  const docs = query(collection(db, "people"), where("owner", "==", userRef));
+  const querySnapshot = await getDocs(docs);
+  const selectedId = document.getElementById("btnYes").getAttribute("data-id");
+  let docRef;
+  querySnapshot.forEach((doc) => {
+    const people = [];
+    const data = doc.data();
+    const id = doc.id;
+    people.push({ id, ...data });
+    docRef = people.find((item) => item.id === selectedId);
+    console.log(found);
+  });
   await deleteDoc(docRef);
+
+  // const docRef = query(
+  //   collection(db, "people", selectedId),
+  //   where("owner", "==", userRef)
+  // );
+  // await deleteDoc(docRef);
   document.getElementById("deleteAlert").classList.add("active");
 }
 
@@ -409,6 +444,9 @@ async function handleSelectIdea(ev) {
   const li = ev.target.closest(".idea");
   const id = li ? li.getAttribute("data-id") : null;
   ideaId = id;
+  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
+  const owner = userRef.id;
+  console.log("OWN", owner);
   if (ev.target.classList.contains("edit")) {
     document.querySelector(".overlay").classList.add("active");
     document.getElementById("dlgIdea").classList.add("active");
@@ -420,6 +458,7 @@ async function handleSelectIdea(ev) {
     let location = document.getElementById("location");
     location.value = data["location"];
     document.getElementById("btnSaveIdea").setAttribute("data-id", id);
+    document.getElementById("form").setAttribute("data-owner", owner);
   } else if (ev.target.closest(".delete")) {
     document.querySelector(".overlay").classList.add("active");
     document.getElementById("deleteIdea").classList.add("active");
