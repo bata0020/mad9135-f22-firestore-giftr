@@ -13,7 +13,7 @@ html {
 
 body {
   width: 100%;
-  max-width: 70em;
+  max-width: 75em;
   margin: 0 auto;
   background-color: #F2F4F5;
 }
@@ -86,7 +86,8 @@ a {
   border: 0.025rem solid #1c5a4c;
   color: #1c5a4c;
   box-shadow: 0 0 3px #1c5a4c;
-  
+  width: 12rem;
+  margin: 0 auto;
 }
 
 .sign-in:hover {
@@ -98,6 +99,8 @@ a {
   border: 0.025rem solid #991400;
   color: #991400;
   box-shadow: 0 0 3px #991400;
+  width: 10rem;
+  margin: 0 auto;
 }
 
 .sign-out:hover {
@@ -248,41 +251,36 @@ li {
 /*  -   -   Dialog  -   -   */
 
 .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
   display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
 }
 
 .overlay.active {
-  display: flex;
-  flex-direction: row;
-  width: 100vw;
-  height: 100vh;
-  background-color: hsla(0, 0%, 0%, 70%);
-  justify-content: center;
-  align-items: center;
+  display: block;
 }
 
 dialog {
   background-color: #F2F4F5;
-  display: none;
-  border: none;
-  border-radius: 0.5rem;
+  margin: auto;
   position: fixed;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  padding: 2rem;
+  border: none;
+  border-radius: 0.5rem;
 }
 
 dialog.active {
   display: block;
-  width: 90vw;
-  height: 33vh;
 }
 
 .form {
@@ -293,6 +291,7 @@ dialog.active {
   gap: 0.75rem;
   border-radius: 0.35rem;
   padding-top: 0.5rem;
+  width: 15em;
 }
 
 .form label {
@@ -331,6 +330,10 @@ label {
   padding-top: 2rem
 }
 
+#add-edit-person, #add-edit-idea, #deletePerson h2, #deleteIdea h2 {
+  text-align: center;
+}
+
 @media only screen and (min-width: 45em) {
   h1 {
     font-size: 2.488rem;
@@ -360,7 +363,7 @@ label {
   }
 
   .form {
-    width: 22em;
+    width: 20em;
     margin: 0 auto;
   }
 }
@@ -378,12 +381,63 @@ label {
     font-size: 1.25rem;
   }
 
+  h1, h2 {
+    text-align: start;
+  }
+
+  nav {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
+
+  .sign-in-out {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .sign-in {
+    width: 14rem;
+  }
+
   .sign-in, .sign-out {
     font-size: 1.25rem;
+  }
+
+  .email {
+    font-size: 0.95rem;
+    padding: 0;
   }
 
   .name,
   .title {
     margin-bottom: 0.25rem;
+  }
+
+  .people, .ideas {
+    padding: 1rem;
+  }
+
+  .idea {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .idea-info {
+    gap: 1.5rem;
+  }
+
+  #btnAddPerson, #btnAddIdea, label {
+    font-size: 0.9rem;
+  }
+
+  .form label, .form input {
+    font-size: 1.1rem;
+  }
+
+  .edit, .delete, #btnSavePerson, #btnCancelPerson, #btnSaveIdea, #btnCancelIdea, #btnYes, #btnCancel {
+    font-size: 0.8rem;
   }
 }
