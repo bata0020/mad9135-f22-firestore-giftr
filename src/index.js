@@ -115,7 +115,6 @@ function attemptLogin() {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          // const email = error.customData.email;
           const credential = GithubAuthProvider.credentialFromError(error);
           console.log(errorCode);
           console.log(errorMessage);
@@ -175,13 +174,9 @@ function changeUI(user) {
 function hasUserLoggedIn() {
   getPeople();
 
-  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
-  const queryUsers = query(
-    collection(db, "people"),
-    where("owner", "==", userRef)
-  );
+  const q = getUserRefDocs();
 
-  onSnapshot(queryUsers, (querySnapshot) => {
+  onSnapshot(q, (querySnapshot) => {
     const people = [];
     querySnapshot.forEach((doc) => {
       people.push({ id: doc.id, ...doc.data() });
@@ -198,9 +193,20 @@ function hasUserLoggedIn() {
   });
 }
 
-async function getPeople() {
+function getUserRefDocs() {
   const userRef = doc(collection(db, "users"), auth.currentUser.uid);
   const docs = query(collection(db, "people"), where("owner", "==", userRef));
+  return docs;
+}
+
+function getUserId() {
+  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
+  const owner = userRef.id;
+  return owner;
+}
+
+async function getPeople() {
+  const docs = getUserRefDocs();
   const querySnapshot = await getDocs(docs);
   querySnapshot.forEach((doc) => {
     const data = doc.data();
@@ -211,8 +217,7 @@ async function getPeople() {
 }
 
 function buildPeople(people) {
-  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
-  const owner = userRef.id;
+  const owner = getUserId();
   const ul = document.querySelector("ul.person-list");
   if (people.length) {
     ul.innerHTML = people
@@ -370,34 +375,10 @@ async function handleSelectPerson(ev) {
   }
 }
 
-// async function deletePerson() {
-//   let selectedId = document.getElementById("btnYes").getAttribute("data-id");
-//   const docRef = doc(db, "people", selectedId);
-//   await deleteDoc(docRef);
-//   document.getElementById("deleteAlert").classList.add("active");
-// }
-
 async function deletePerson() {
-  const userRef = doc(collection(db, "users"), auth.currentUser.uid);
-  const docs = query(collection(db, "people"), where("owner", "==", userRef));
-  const querySnapshot = await getDocs(docs);
-  const selectedId = document.getElementById("btnYes").getAttribute("data-id");
-  let docRef;
-  querySnapshot.forEach((doc) => {
-    const people = [];
-    const data = doc.data();
-    const id = doc.id;
-    people.push({ id, ...data });
-    docRef = people.find((item) => item.id === selectedId);
-    console.log(found);
-  });
+  let selectedId = document.getElementById("btnYes").getAttribute("data-id");
+  const docRef = doc(db, "people", selectedId);
   await deleteDoc(docRef);
-
-  // const docRef = query(
-  //   collection(db, "people", selectedId),
-  //   where("owner", "==", userRef)
-  // );
-  // await deleteDoc(docRef);
   document.getElementById("deleteAlert").classList.add("active");
 }
 
@@ -446,7 +427,6 @@ async function handleSelectIdea(ev) {
   ideaId = id;
   const userRef = doc(collection(db, "users"), auth.currentUser.uid);
   const owner = userRef.id;
-  console.log("OWN", owner);
   if (ev.target.classList.contains("edit")) {
     document.querySelector(".overlay").classList.add("active");
     document.getElementById("dlgIdea").classList.add("active");
