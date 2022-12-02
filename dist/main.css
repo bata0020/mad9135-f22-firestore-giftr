@@ -142,7 +142,7 @@ p {
   margin-bottom: 0.25rem;
 }
 
-.person-list {
+.person-list, .idea-list {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
