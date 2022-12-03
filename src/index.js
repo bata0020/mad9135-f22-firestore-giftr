@@ -100,7 +100,6 @@ function attemptLogin() {
           const token = credential.accessToken;
           sessionStorage.setItem("token", token);
           const user = result.user;
-          console.log("User", user);
           const userColRef = collection(db, "users");
           setDoc(
             doc(userColRef, user.uid),
@@ -176,13 +175,19 @@ function hasUserLoggedIn() {
 
   const q = getUserRefDocs();
 
-  onSnapshot(q, (querySnapshot) => {
-    const people = [];
-    querySnapshot.forEach((doc) => {
-      people.push({ id: doc.id, ...doc.data() });
-    });
-    buildPeople(people);
-  });
+  onSnapshot(
+    q,
+    (querySnapshot) => {
+      const people = [];
+      querySnapshot.forEach((doc) => {
+        people.push({ id: doc.id, ...doc.data() });
+      });
+      buildPeople(people);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 
   onSnapshot(collection(db, "gift-ideas"), (snapshot) => {
     const ideas = [];

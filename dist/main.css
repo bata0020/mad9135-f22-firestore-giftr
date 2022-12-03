@@ -76,7 +76,7 @@ a {
 }
 
 .sign-in, .sign-out {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   border-radius: 0.5rem;
   transition: background-color 0.3s, color 0.3s;
   text-align: center;
@@ -86,7 +86,7 @@ a {
   border: 0.025rem solid #1c5a4c;
   color: #1c5a4c;
   box-shadow: 0 0 3px #1c5a4c;
-  width: 12rem;
+  width: 11rem;
   margin: 0 auto;
 }
 
@@ -99,7 +99,7 @@ a {
   border: 0.025rem solid #991400;
   color: #991400;
   box-shadow: 0 0 3px #991400;
-  width: 10rem;
+  width: 6rem;
   margin: 0 auto;
 }
 
@@ -351,7 +351,7 @@ label {
   }
 
   .sign-out {
-    width: 10rem;
+    width: 9rem;
     margin: 0 auto;
   }
 
@@ -404,6 +404,7 @@ label {
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
+    padding: 1rem 0;
   }
 
   .sign-in {
