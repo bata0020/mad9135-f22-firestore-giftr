@@ -189,13 +189,19 @@ function hasUserLoggedIn() {
     }
   );
 
-  onSnapshot(collection(db, "gift-ideas"), (snapshot) => {
-    const ideas = [];
-    snapshot.docs.forEach((doc) => {
-      ideas.push({ id: doc.id, ...doc.data() });
-    });
-    getIdeas(personId);
-  });
+  onSnapshot(
+    collection(db, "gift-ideas"),
+    (snapshot) => {
+      const ideas = [];
+      snapshot.docs.forEach((doc) => {
+        ideas.push({ id: doc.id, ...doc.data() });
+      });
+      getIdeas(personId);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 }
 
 function getUserRefDocs() {
